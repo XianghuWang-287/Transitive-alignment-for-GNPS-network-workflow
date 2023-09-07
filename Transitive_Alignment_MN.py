@@ -107,10 +107,15 @@ def add_edges_to_mst(original_graph, mst):
     remaining_edges = [(u, v, original_graph[u][v]['Cosine']) for u, v in original_graph.edges() if not mst.has_edge(u, v)]
     remaining_edges.sort(key=lambda x: x[2], reverse=True)
 
+    average_weight = calculate_average_weight(mst)
+
     for u, v, weight in remaining_edges:
         mst.add_edge(u, v, Cosine=weight)
-        if mst.number_of_edges() > mst.number_of_nodes()*math.log(mst.number_of_nodes()):
+        new_average_weight = calculate_average_weight(mst)
+        if new_average_weight >= average_weight:
+            mst.remove_edge(u, v)
             break
+        average_weight = new_average_weight
 
     return mst
 
